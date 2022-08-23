@@ -1,0 +1,299 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "The AWS CloudFormation template for this Serverless application",
+  "Resources": {
+    "AppointmentLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/appointment-synchronization-v2-dev-appointment"
+      }
+    },
+    "IamRoleLambdaExecution": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": {
+              "Fn::Join": [
+                "-",
+                [
+                  "appointment-synchronization-v2",
+                  "dev",
+                  "lambda"
+                ]
+              ]
+            },
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogStream",
+                    "logs:CreateLogGroup"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/appointment-synchronization-v2-dev*:*"
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/appointment-synchronization-v2-dev*:*:*"
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": "arn:aws:logs:*:*:*"
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "dynamodb:*"
+                  ],
+                  "Resource": "arn:aws:dynamodb:us-east-1:*:table/Medic-dev"
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "s3:GetObject"
+                  ],
+                  "Resource": "arn:aws:s3:::*"
+                }
+              ]
+            }
+          }
+        ],
+        "Path": "/",
+        "RoleName": "appointment-synchronization-role-v2-dev"
+      }
+    },
+    "AppointmentLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": "digital-test-ttaa-jdmp-adev",
+          "S3Key": "serverless/appointment-synchronization-v2/dev/1660663657843-2022-08-16T15:27:37.843Z/appointment.zip"
+        },
+        "Handler": "src/functions/appointment/handler.appointmentHandler",
+        "Runtime": "nodejs14.x",
+        "FunctionName": "appointment-synchronization-v2-dev-appointment",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+            "NODE_OPTIONS": "--enable-source-maps --stack-trace-limit=1000"
+          }
+        },
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "AppointmentLogGroup"
+      ]
+    },
+    "AppointmentLambdaVersionlnfwrpOzaeYnaFpZnFyZJXeWRhXSiy0JQneSzLzU": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "AppointmentLambdaFunction"
+        },
+        "CodeSha256": "JPj4a/eXqWAzN2QgKPyi32C+OfXydQ709houseAL7Pg="
+      }
+    },
+    "AppointmentCustomS31": {
+      "Type": "Custom::S3",
+      "Version": 1,
+      "DependsOn": [
+        "AppointmentLambdaFunction",
+        "CustomDashresourceDashexistingDashs3LambdaFunction"
+      ],
+      "Properties": {
+        "ServiceToken": {
+          "Fn::GetAtt": [
+            "CustomDashresourceDashexistingDashs3LambdaFunction",
+            "Arn"
+          ]
+        },
+        "FunctionName": "appointment-synchronization-v2-dev-appointment",
+        "BucketName": "digital-test-ttaa-medic-dev",
+        "BucketConfigs": [
+          {
+            "Event": "s3:ObjectCreated:*",
+            "Rules": [
+              {
+                "Suffix": ".csv"
+              },
+              {
+                "Prefix": "medics/"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "IamRoleCustomResourcesLambdaExecution": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": {
+              "Fn::Join": [
+                "-",
+                [
+                  "dev",
+                  "appointment-synchronization-v2",
+                  "custom-resources-lambda"
+                ]
+              ]
+            },
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Resource": {
+                    "Fn::Join": [
+                      ":",
+                      [
+                        "arn",
+                        {
+                          "Ref": "AWS::Partition"
+                        },
+                        "s3",
+                        "",
+                        "",
+                        "digital-test-ttaa-medic-dev"
+                      ]
+                    ]
+                  },
+                  "Action": [
+                    "s3:PutBucketNotification",
+                    "s3:GetBucketNotification"
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Resource": {
+                    "Fn::Join": [
+                      ":",
+                      [
+                        "arn",
+                        {
+                          "Ref": "AWS::Partition"
+                        },
+                        "lambda",
+                        {
+                          "Ref": "AWS::Region"
+                        },
+                        {
+                          "Ref": "AWS::AccountId"
+                        },
+                        "function",
+                        "*"
+                      ]
+                    ]
+                  },
+                  "Action": [
+                    "lambda:AddPermission",
+                    "lambda:RemovePermission"
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "CustomDashresourceDashexistingDashs3LambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": "digital-test-ttaa-jdmp-adev",
+          "S3Key": "serverless/appointment-synchronization-v2/dev/1660663657843-2022-08-16T15:27:37.843Z/custom-resources.zip"
+        },
+        "FunctionName": "appointment-synchronization-v2-dev-custom-resource-existing-s3",
+        "Handler": "s3/handler.handler",
+        "MemorySize": 1024,
+        "Runtime": "nodejs14.x",
+        "Timeout": 180,
+        "Role": {
+          "Fn::GetAtt": [
+            "IamRoleCustomResourcesLambdaExecution",
+            "Arn"
+          ]
+        }
+      },
+      "DependsOn": [
+        "IamRoleCustomResourcesLambdaExecution"
+      ]
+    }
+  },
+  "Outputs": {
+    "ServerlessDeploymentBucketName": {
+      "Value": "digital-test-ttaa-jdmp-adev",
+      "Export": {
+        "Name": "sls-appointment-synchronization-v2-dev-ServerlessDeploymentBucketName"
+      }
+    },
+    "AppointmentLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "AppointmentLambdaVersionlnfwrpOzaeYnaFpZnFyZJXeWRhXSiy0JQneSzLzU"
+      },
+      "Export": {
+        "Name": "sls-appointment-synchronization-v2-dev-AppointmentLambdaFunctionQualifiedArn"
+      }
+    }
+  }
+}
