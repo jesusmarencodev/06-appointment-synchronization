@@ -138,7 +138,7 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "digital-test-ttaa-jdmp-adev",
-                "S3Key": "serverless/appointment-synchronization-v2/dev/1660663657843-2022-08-16T15:27:37.843Z/appointment.zip"
+                "S3Key": "serverless/appointment-synchronization-v2/dev/1661356427827-2022-08-24T15:53:47.827Z/appointment.zip"
               },
               "Handler": "src/functions/appointment/handler.appointmentHandler",
               "Runtime": "nodejs14.x",
@@ -162,14 +162,14 @@
               "AppointmentLogGroup"
             ]
           },
-          "AppointmentLambdaVersionlnfwrpOzaeYnaFpZnFyZJXeWRhXSiy0JQneSzLzU": {
+          "AppointmentLambdaVersionepzcckRnarOvGYbrl5X4DDgs6K6Qh4ANg7FoKqCM": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "AppointmentLambdaFunction"
               },
-              "CodeSha256": "JPj4a/eXqWAzN2QgKPyi32C+OfXydQ709houseAL7Pg="
+              "CodeSha256": "N0Te+ueXFiceL0IwT3wYkCK0XtvhH/yyL/nzAnf2ZQ0="
             }
           },
           "AppointmentCustomS31": {
@@ -297,7 +297,7 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "digital-test-ttaa-jdmp-adev",
-                "S3Key": "serverless/appointment-synchronization-v2/dev/1660663657843-2022-08-16T15:27:37.843Z/custom-resources.zip"
+                "S3Key": "serverless/appointment-synchronization-v2/dev/1661356427827-2022-08-24T15:53:47.827Z/custom-resources.zip"
               },
               "FunctionName": "appointment-synchronization-v2-dev-custom-resource-existing-s3",
               "Handler": "s3/handler.handler",
@@ -326,7 +326,7 @@
           "AppointmentLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "AppointmentLambdaVersionlnfwrpOzaeYnaFpZnFyZJXeWRhXSiy0JQneSzLzU"
+              "Ref": "AppointmentLambdaVersionepzcckRnarOvGYbrl5X4DDgs6K6Qh4ANg7FoKqCM"
             },
             "Export": {
               "Name": "sls-appointment-synchronization-v2-dev-AppointmentLambdaFunctionQualifiedArn"
@@ -381,7 +381,7 @@
         "timeout": 6,
         "runtime": "nodejs14.x",
         "vpc": {},
-        "versionLogicalId": "AppointmentLambdaVersionlnfwrpOzaeYnaFpZnFyZJXeWRhXSiy0JQneSzLzU"
+        "versionLogicalId": "AppointmentLambdaVersionepzcckRnarOvGYbrl5X4DDgs6K6Qh4ANg7FoKqCM"
       }
     },
     "configValidationMode": "warn",
@@ -412,7 +412,7 @@
   },
   "package": {
     "individually": true,
-    "artifactDirectoryName": "serverless/appointment-synchronization-v2/dev/1660663657843-2022-08-16T15:27:37.843Z",
+    "artifactDirectoryName": "serverless/appointment-synchronization-v2/dev/1661356427827-2022-08-24T15:53:47.827Z",
     "artifact": ""
   }
 }
